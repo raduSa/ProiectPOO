@@ -148,7 +148,7 @@ class GameObject {
 	Vector2D position;
 	Vector2D velocity;
 	Vector2D dimensions;// width/height
-	const float speed = 5;
+	static float speed;
 	bool aDown, dDown;
 	SDL_KeyCode Up, Down, Left, Right;
 	TextureManager* texture;
@@ -168,6 +168,7 @@ class GameObject {
 		destR.h = dimensions.getY();
 		destR.w = dimensions.getX();
 	}
+	static void calculatePos(GameObject* player) { player->position += player->velocity * speed; }
 public:
 	GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int w, int h, const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right) {
 		renderer = ren;
@@ -192,7 +193,7 @@ public:
 		collider->setPrevPos();
 		velocity.clear();
 		velocity.setX(0 + dDown - aDown);
-		position += velocity * speed;
+		calculatePos(this);
 		if (position.getX() < 0)
 			position.setX(0);
 		if (position.getX() > windowW - dimensions.getX())
@@ -209,7 +210,7 @@ public:
 			velocity.setY(-2.5);
 		else
 			velocity.setY(2.5);
-		position += velocity * speed;
+		calculatePos(this);
 		if (position.getY() > windowH - dimensions.getY())
 			position.setY(windowH - dimensions.getY());
 		if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }
@@ -244,12 +245,12 @@ public:
 		collider->getPrevPos();
 		collider->update();
 	}
-	Vector2D getPos() { return position; }
-	Vector2D* getPosPointer() { return &position; }
+	Vector2D getPos() const { return position; }
+	Vector2D* getPosPointer()  { return &position; }
 	SDL_Rect* getDestRPointer() { return &destR; }
-	Collider* getCollider() { return collider; }
+	Collider* getCollider() const { return collider; }
 	SDL_Texture** getTexturePointer() { return &objectTex; }
-	StateManager* getState() { return state; }
+	StateManager* getState() const { return state; }
 	friend std::istream& operator>>(std::istream& in, GameObject player);
 };
 std::istream& operator>>(std::istream& in, GameObject player) {
@@ -260,6 +261,8 @@ std::istream& operator>>(std::istream& in, GameObject player) {
 	player.dimensions.setY(y);
 	return in;
 }
+
+float GameObject::speed = 5;
 
 inline Collider::Collider(GameObject* player) : destR(player->getDestRPointer()), position(player->getPosPointer()) {
 	setPrevPos();
