@@ -143,6 +143,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="StateManager.h" />
+    <ClInclude Include="textureException.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>

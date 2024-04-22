@@ -2,7 +2,18 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <iostream>
+#include <fstream>
+#include <exception>
 #include "GameObject.h"
+#include "textureException.h"
+
+class BackgroundTexExc : public textureException {
+public:
+	const char* what() const throw() {
+		return "No texture found - background";
+	}
+	~BackgroundTexExc() {}
+};
 
 class Game {
 	int cnt = 0;
@@ -21,6 +32,6 @@ public:
 	void update();
 	void render();
 	void clean();
-	bool running() { return isRunning; }
+	bool running() const { return isRunning; }
 	friend std::istream& operator>>(std::istream& in, Game* game);
 };

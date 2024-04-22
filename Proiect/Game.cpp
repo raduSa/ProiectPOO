@@ -4,11 +4,15 @@ void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 	int flags = 0;
 	std::cout << width << " " << height;
 	if (fullscreen) { flags = SDL_WINDOW_FULLSCREEN; }
+	std::ifstream file;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 		window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
 		renderer = SDL_CreateRenderer(window, -1, 0);
-		backgroundTex = TextureManager::LoadTexture("assets/background.png", renderer);
+		if (TextureManager::FileExists("assets/background.png"))
+			backgroundTex = TextureManager::LoadTexture("assets/background.png", renderer);
+		else
+			throw *(new BackgroundTexExc());
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		isRunning = true;
 	}
@@ -35,16 +39,21 @@ void Game::handleEvents() {
 
 void Game::update() {
 	player->Update();
+
 	player->MoveX();
 	if (Collider::collision(player->getCollider()->getRect(), enemy->getCollider()->getRect()))
 		player->revertPos();
+
 	player->MoveY();
 	if (Collider::collision(player->getCollider()->getRect(), enemy->getCollider()->getRect()))
 		player->revertPos();
+
 	enemy->Update();
+
 	enemy->MoveX();
 	if (Collider::collision(enemy->getCollider()->getRect(), player->getCollider()->getRect()))
 		enemy->revertPos();
+
 	enemy->MoveY();
 	if (Collider::collision(enemy->getCollider()->getRect(), player->getCollider()->getRect()))
 		enemy->revertPos();

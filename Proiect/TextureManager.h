@@ -5,6 +5,21 @@
 #include <string>
 #include "StateManager.h"
 #include "GameObject.h"
+#include "textureException.h"
+
+class GameObjectTexExc : public textureException {
+	std::string message;
+
+public:
+	GameObjectTexExc(const std::string& folderName, const std::string& fileName) : 
+		message("No texture found - folder: " + folderName + ", file: " + fileName) {};
+
+	const char* what() const throw() {
+		return message.c_str();
+	}
+
+	~GameObjectTexExc() {}
+};
 
 class GameObject;
 
@@ -16,6 +31,7 @@ class TextureManager {
 public:
 	TextureManager(GameObject* player, SDL_Renderer* renderer, std::string folder);
 	~TextureManager();
+	static bool FileExists(std::string);
 	static SDL_Texture* LoadTexture(std::string fileName, SDL_Renderer* renderer);
 	void update();
 };
