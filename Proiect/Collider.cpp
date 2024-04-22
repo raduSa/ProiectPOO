@@ -23,7 +23,7 @@ void Collider::setPrevPos() {
 
 void Collider::getPrevPos() const { 
 	*destR = prevState; 
-	*position = Vector2D(prevPos.getX(), prevPos.getY()); 
+	*position = prevPos; 
 }
 
 std::ostream& operator<<(std::ostream& out, const Collider& col) {

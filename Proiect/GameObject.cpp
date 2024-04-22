@@ -9,7 +9,8 @@ void GameObject::updateDestR() {
 	destR.w = dimensions.getX();
 }
 
-GameObject::GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int w, int h, const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right) {
+GameObject::GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int w, int h, 
+	const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right, const SDL_KeyCode& attack) {
 	renderer = ren;
 	collider = new Collider(this);
 	state = new StateManager();
@@ -19,7 +20,7 @@ GameObject::GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int 
 	dimensions = Vector2D(w, h);
 	SDL_GetRendererOutputSize(renderer, &windowW, &windowH);
 	aDown = dDown = false;
-	Up = up; Down = down; Left = left; Right = right;
+	Up = up; Down = down; Left = left; Right = right; Attack = attack;
 }
 
 void GameObject::Update() {
@@ -30,34 +31,39 @@ void GameObject::Update() {
 }
 
 void GameObject::MoveX() {
+	// save previous pos in case of collision
 	collider->setPrevPos();
+	// get new velocity and pos
 	velocity.clear();
 	velocity.setX(0 + dDown - aDown);
 	calculatePos(this);
+	// check collisions with screen edges
 	if (position.getX() < 0)
 		position.setX(0);
 	if (position.getX() > windowW - dimensions.getX())
 		position.setX(windowW - dimensions.getX());
+	// update the collision box
 	updateDestR();
 	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }//state : crouch
-	collider->update();
 }
 
 void GameObject::MoveY() {
 	if (state->IsCrouching()) { destR.y -= destR.h; destR.h *= 2; }//state : crouch
 	collider->setPrevPos();
+	// get new velocity and pos, considering jumping
 	velocity.clear();
 	if (state->IsJumping())//state : jump
 		velocity.setY(-2.5);
 	else
 		velocity.setY(2.5);
 	calculatePos(this);
+	// check collision with the bottom of the screen
 	if (position.getY() > windowH - dimensions.getY())
 		position.setY(windowH - dimensions.getY());
 	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }
+	// update collision box
 	updateDestR();
-	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }//state : crouch
-	collider->update();
+	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }
 }
 
 void GameObject::handleInput(const SDL_Event& event) {
@@ -70,6 +76,10 @@ void GameObject::handleInput(const SDL_Event& event) {
 			aDown = true;
 		if (event.key.keysym.sym == Right)
 			dDown = true;
+		if (event.key.keysym.sym == Attack && !state->IsAttacking() && state->CanAttack()) {
+			state->attack();
+			state->flipCanAttack();
+		}
 	}
 	if (event.type == SDL_KEYUP) {
 		if (event.key.keysym.sym == Down)
@@ -78,12 +88,14 @@ void GameObject::handleInput(const SDL_Event& event) {
 			aDown = false;
 		if (event.key.keysym.sym == Right)
 			dDown = false;
+		if (event.key.keysym.sym == Attack)
+			state->flipCanAttack();
+
 	}
 }
 
 void GameObject::revertPos() {
 	collider->getPrevPos();
-	collider->update();
 }
 
 std::istream& operator>>(std::istream& in, GameObject player) {

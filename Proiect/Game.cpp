@@ -17,8 +17,8 @@ void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 		isRunning = true;
 	}
 	else { isRunning = false; }
-	player = new GameObject("player", renderer, 0, height - 256, 200, 450, SDLK_w, SDLK_s, SDLK_a, SDLK_d);
-	enemy = new GameObject("enemy", renderer, width - 128, height - 256, 200, 450, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT);
+	player = new GameObject("player", renderer, 0, height - 256, 200, 450, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e);
+	enemy = new GameObject("enemy", renderer, width - 128, height - 256, 200, 450, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1);
 
 }
 
@@ -38,16 +38,17 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
+	// update player related proprieties
 	player->Update();
-
+	// move player along X axis,in case of collision go back
 	player->MoveX();
 	if (Collider::collision(player->getCollider()->getRect(), enemy->getCollider()->getRect()))
 		player->revertPos();
-
+	// move player along Y axis, in case of collision go back
 	player->MoveY();
 	if (Collider::collision(player->getCollider()->getRect(), enemy->getCollider()->getRect()))
 		player->revertPos();
-
+	// same with enemy
 	enemy->Update();
 
 	enemy->MoveX();

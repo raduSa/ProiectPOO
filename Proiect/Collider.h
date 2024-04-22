@@ -15,12 +15,9 @@ class Collider {
 public:
 	Collider(GameObject* player);
 	~Collider() { delete position; delete destR; }
-	void update() {
-		collider = *destR;
-	}
 	static bool collision(const SDL_Rect& recA, const SDL_Rect& recB);
 	void setPrevPos();
 	void getPrevPos() const;
-	SDL_Rect getRect() const { return collider; }
+	SDL_Rect getRect() const { return *destR; }
 	friend std::ostream& operator<<(std::ostream& out, const Collider& col);
 };

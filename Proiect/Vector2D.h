@@ -19,6 +19,7 @@ public:
 	Vector2D& operator/=(const Vector2D& vec) { return this->Divide(vec); }
 	Vector2D& operator*(const int& i) { x *= i; y *= i; return *this; }
 	Vector2D& operator=(Vector2D* vec) { x = vec->x; y = vec->y; return *this; }
+	Vector2D& operator=(const Vector2D& vec) { x = vec.x; y = vec.y; return *this; }
 
 	friend Vector2D operator+(Vector2D& v1, const Vector2D& v2);
 	friend Vector2D operator-(Vector2D& v1, const Vector2D& v2);
