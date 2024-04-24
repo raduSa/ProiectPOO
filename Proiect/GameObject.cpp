@@ -9,11 +9,11 @@ void GameObject::updateDestR() {
 	destR.w = dimensions.getX();
 }
 
-GameObject::GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int w, int h, 
+GameObject::GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int w, int h, bool isTurned,
 	const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right, const SDL_KeyCode& attack) {
 	renderer = ren;
 	collider = new Collider(this);
-	state = new StateManager();
+	state = new StateManager(isTurned);
 	texture = new TextureManager(this, ren, folder);
 	position = Vector2D(x, y);
 	velocity = Vector2D();
@@ -24,10 +24,13 @@ GameObject::GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int 
 }
 
 void GameObject::Update() {
+	if (position.getY() > windowH - dimensions.getY())
+		state->airborne();
 	state->update();
 	std::cout << *state;
 	texture->update();
 	std::cout << *collider;
+	//collider->update() - for changes in hitbox based on state
 }
 
 void GameObject::MoveX() {
@@ -48,7 +51,7 @@ void GameObject::MoveX() {
 }
 
 void GameObject::MoveY() {
-	if (state->IsCrouching()) { destR.y -= destR.h; destR.h *= 2; }//state : crouch
+	//if (state->IsCrouching()) { destR.y -= destR.h; destR.h *= 2; }//uncrouch - idk if this is needed
 	collider->setPrevPos();
 	// get new velocity and pos, considering jumping
 	velocity.clear();
@@ -67,7 +70,7 @@ void GameObject::MoveY() {
 }
 
 void GameObject::handleInput(const SDL_Event& event) {
-	if (event.type == SDL_KEYDOWN) {
+	if (event.type == SDL_KEYDOWN && state->CanAct()) {
 		if (event.key.keysym.sym == Up && position.getY() == windowH - dimensions.getY())
 			state->jump();
 		if (event.key.keysym.sym == Down && !state->IsJumping())
@@ -76,9 +79,9 @@ void GameObject::handleInput(const SDL_Event& event) {
 			aDown = true;
 		if (event.key.keysym.sym == Right)
 			dDown = true;
-		if (event.key.keysym.sym == Attack && !state->IsAttacking() && state->CanAttack()) {
+		if (event.key.keysym.sym == Attack && !state->IsJumping()) {
 			state->attack();
-			state->flipCanAttack();
+			state->flipCanAct();
 		}
 	}
 	if (event.type == SDL_KEYUP) {
@@ -88,10 +91,22 @@ void GameObject::handleInput(const SDL_Event& event) {
 			aDown = false;
 		if (event.key.keysym.sym == Right)
 			dDown = false;
-		if (event.key.keysym.sym == Attack)
-			state->flipCanAttack();
-
 	}
+}
+
+void GameObject::Render() {
+	// if player is attacking, draw the model wider (doesnt affect the hitbox)
+	collider->setPrevPos();
+	if (state->IsAttacking()) {
+		if (state->IsTurned()) {
+			destR.x -= 0.4 * destR.w;
+			destR.w *= 1.4;
+		}
+		else 
+			destR.w *= 1.4;
+	}
+	SDL_RenderCopy(renderer, objectTex, NULL, &destR);
+	collider->getPrevPos();
 }
 
 void GameObject::revertPos() {

@@ -1,5 +1,13 @@
 #include "Game.h"
 
+void Game::turnPlayers() {
+	if (((player->getPos().getX() + player->getDim().getX() / 2) * (-(player->getState()->IsTurned() * 2 - 1)) -
+		(enemy->getPos().getX() + enemy->getDim().getX() / 2) * (enemy->getState()->IsTurned() * 2 - 1)) > 0) {
+		player->getState()->turn();
+		enemy->getState()->turn();
+	}
+}
+
 void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 	int flags = 0;
 	std::cout << width << " " << height;
@@ -17,8 +25,8 @@ void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 		isRunning = true;
 	}
 	else { isRunning = false; }
-	player = new GameObject("player", renderer, 0, height - 256, 200, 450, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e);
-	enemy = new GameObject("enemy", renderer, width - 128, height - 256, 200, 450, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1);
+	player = new GameObject("player", renderer, 0, height - 256, 200, 450, false, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e);
+	enemy = new GameObject("enemy", renderer, width - 128, height - 256, 200, 450, true, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1);
 
 }
 
@@ -39,6 +47,7 @@ void Game::handleEvents() {
 
 void Game::update() {
 	// update player related proprieties
+	std::cout << "Player:\n";
 	player->Update();
 	// move player along X axis,in case of collision go back
 	player->MoveX();
@@ -49,6 +58,7 @@ void Game::update() {
 	if (Collider::collision(player->getCollider()->getRect(), enemy->getCollider()->getRect()))
 		player->revertPos();
 	// same with enemy
+	std::cout << "Enemy:\n";
 	enemy->Update();
 
 	enemy->MoveX();
@@ -58,6 +68,8 @@ void Game::update() {
 	enemy->MoveY();
 	if (Collider::collision(enemy->getCollider()->getRect(), player->getCollider()->getRect()))
 		enemy->revertPos();
+	// check if players should turn around
+	turnPlayers();
 }
 
 void Game::render() {

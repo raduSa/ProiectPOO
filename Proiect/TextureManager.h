@@ -26,6 +26,10 @@ class GameObject;
 class TextureManager {
 	SDL_Texture* idle;
 	SDL_Texture* crouch;
+	SDL_Texture* punch;
+	SDL_Texture* idleInverted;
+	SDL_Texture* crouchInverted;
+	SDL_Texture* punchInverted;
 	SDL_Texture** objectTex;
 	StateManager* state;
 public:

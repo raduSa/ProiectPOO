@@ -16,7 +16,7 @@ class GameObject {
 	Vector2D velocity;
 	Vector2D dimensions;// width/height
 	static float speed;
-	bool aDown, dDown;
+	bool aDown, dDown, atckDown;
 	SDL_KeyCode Up, Down, Left, Right, Attack;
 	TextureManager* texture;
 	Collider* collider;
@@ -29,20 +29,19 @@ class GameObject {
 	static void calculatePos(GameObject* player) { player->position += player->velocity * speed; }
 
 public:
-	GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int w, int h, 
+	GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int w, int h, bool isTurned, 
 		const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right, const SDL_KeyCode& attack);
 	~GameObject() { delete texture; delete state; delete collider; }
 	void Update();
 	void MoveX();
 	void MoveY();
 	void handleInput(const SDL_Event& event);
-	void Render() {
-		SDL_RenderCopy(renderer, objectTex, NULL, &destR);
-	}
+	void Render();
 	void revertPos();
 
 	Vector2D getPos() const { return position; }
 	Vector2D* getPosPointer() { return &position; }
+	Vector2D getDim() const { return dimensions; }
 	SDL_Rect* getDestRPointer() { return &destR; }
 	Collider* getCollider() const { return collider; }
 	SDL_Texture** getTexturePointer() { return &objectTex; }

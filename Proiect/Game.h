@@ -24,7 +24,7 @@ class Game {
 	GameObject* player;
 	GameObject* enemy;
 	int width, height;
-
+	void turnPlayers();
 public:
 	Game() { width = 0; height = 0; }
 	void init(const char* title, int xpos, int ypos, bool fullscreen);
