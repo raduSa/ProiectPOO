@@ -1,5 +1,7 @@
 #include "Game.h"
 
+SDL_Renderer* Game::renderer = nullptr;
+
 void Game::turnPlayers() {
 	if (((player->getPos().getX() + player->getDim().getX() / 2) * (-(player->getState()->IsTurned() * 2 - 1)) -
 		(enemy->getPos().getX() + enemy->getDim().getX() / 2) * (enemy->getState()->IsTurned() * 2 - 1)) > 0) {
@@ -18,15 +20,15 @@ void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 		window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		if (TextureManager::FileExists("assets/background.png"))
-			backgroundTex = TextureManager::LoadTexture("assets/background.png", renderer);
+			backgroundTex = TextureManager::LoadTexture("assets/background.png");
 		else
 			throw *(new BackgroundTexExc());
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		isRunning = true;
 	}
 	else { isRunning = false; }
-	player = new GameObject("player", renderer, 0, height - 256, 200, 450, false, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e);
-	enemy = new GameObject("enemy", renderer, width - 128, height - 256, 200, 450, true, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1);
+	player = new GameObject("player", 0, height - 256, 200, 450, false, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e);
+	enemy = new GameObject("enemy", width - 128, height - 256, 200, 450, true, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1);
 
 }
 

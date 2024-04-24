@@ -5,6 +5,7 @@
 #include "Vector2D.h"
 #include "StateManager.h"
 #include "TextureManager.h"
+#include "Game.h"
 #include <string>
 
 class TextureManager;
@@ -23,13 +24,12 @@ class GameObject {
 	StateManager* state;
 	SDL_Texture* objectTex;
 	SDL_Rect destR;
-	SDL_Renderer* renderer;
 	int windowW, windowH;
 	void updateDestR();
 	static void calculatePos(GameObject* player) { player->position += player->velocity * speed; }
 
 public:
-	GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int w, int h, bool isTurned, 
+	GameObject(std::string folder, int x, int y, int w, int h, bool isTurned, 
 		const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right, const SDL_KeyCode& attack);
 	~GameObject() { delete texture; delete state; delete collider; }
 	void Update();

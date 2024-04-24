@@ -33,9 +33,9 @@ class TextureManager {
 	SDL_Texture** objectTex;
 	StateManager* state;
 public:
-	TextureManager(GameObject* player, SDL_Renderer* renderer, std::string folder);
+	TextureManager(GameObject* player, std::string folder);
 	~TextureManager();
 	static bool FileExists(std::string);
-	static SDL_Texture* LoadTexture(std::string fileName, SDL_Renderer* renderer);
+	static SDL_Texture* LoadTexture(std::string fileName);
 	void update();
 };

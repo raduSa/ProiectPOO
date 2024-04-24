@@ -1,36 +1,37 @@
 #include "TextureManager.h"
 #include <fstream>
 
-TextureManager::TextureManager(GameObject* player, SDL_Renderer* renderer, std::string folder) :
+TextureManager::TextureManager(GameObject* player, std::string folder) :
 	objectTex(player->getTexturePointer()), state(player->getState()) {
+	SDL_Renderer* ren = Game::getRenderer();
 	// normal textures
 	if (TextureManager::FileExists("assets/" + folder + "/idle.png"))
-		idle = TextureManager::LoadTexture("assets/" + folder + "/idle.png", renderer);
+		idle = TextureManager::LoadTexture("assets/" + folder + "/idle.png");
 	else 
 		throw* (new GameObjectTexExc(folder, "idle"));
 
 	if (TextureManager::FileExists("assets/" + folder + "/crouch.png"))
-		crouch = TextureManager::LoadTexture("assets/" + folder + "/crouch.png", renderer);
+		crouch = TextureManager::LoadTexture("assets/" + folder + "/crouch.png");
 	else
 		throw* (new GameObjectTexExc(folder, "crouch"));
 
 	if (TextureManager::FileExists("assets/" + folder + "/punch.png"))
-		punch = TextureManager::LoadTexture("assets/" + folder + "/punch.png", renderer);
+		punch = TextureManager::LoadTexture("assets/" + folder + "/punch.png");
 	else
 		throw* (new GameObjectTexExc(folder, "punch"));
 	// inverted textures
 	if (TextureManager::FileExists("assets/" + folder + "/idleInverted.png"))
-		idleInverted = TextureManager::LoadTexture("assets/" + folder + "/idleInverted.png", renderer);
+		idleInverted = TextureManager::LoadTexture("assets/" + folder + "/idleInverted.png");
 	else
 		throw* (new GameObjectTexExc(folder, "idleInverted"));
 
 	if (TextureManager::FileExists("assets/" + folder + "/crouchInverted.png"))
-		crouchInverted = TextureManager::LoadTexture("assets/" + folder + "/crouchInverted.png", renderer);
+		crouchInverted = TextureManager::LoadTexture("assets/" + folder + "/crouchInverted.png");
 	else
 		throw* (new GameObjectTexExc(folder, "crouchInverted"));
 
 	if (TextureManager::FileExists("assets/" + folder + "/punchInverted.png"))
-		punchInverted = TextureManager::LoadTexture("assets/" + folder + "/punchInverted.png", renderer);
+		punchInverted = TextureManager::LoadTexture("assets/" + folder + "/punchInverted.png");
 	else
 		throw* (new GameObjectTexExc(folder, "punchInverted"));
 }
@@ -45,9 +46,9 @@ bool TextureManager::FileExists(std::string filePath) {
 	else return false;
 }
 
-SDL_Texture* TextureManager::LoadTexture(std::string fileName, SDL_Renderer* renderer) {
+SDL_Texture* TextureManager::LoadTexture(std::string fileName) {
 		SDL_Surface* tempSurface = IMG_Load(fileName.c_str());
-		SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, tempSurface);
+		SDL_Texture* tex = SDL_CreateTextureFromSurface(Game::getRenderer(), tempSurface);
 		SDL_FreeSurface(tempSurface);
 		return tex;
 }

@@ -9,16 +9,15 @@ void GameObject::updateDestR() {
 	destR.w = dimensions.getX();
 }
 
-GameObject::GameObject(std::string folder, SDL_Renderer* ren, int x, int y, int w, int h, bool isTurned,
+GameObject::GameObject(std::string folder, int x, int y, int w, int h, bool isTurned,
 	const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right, const SDL_KeyCode& attack) {
-	renderer = ren;
 	collider = new Collider(this);
 	state = new StateManager(isTurned);
-	texture = new TextureManager(this, ren, folder);
+	texture = new TextureManager(this, folder);
 	position = Vector2D(x, y);
 	velocity = Vector2D();
 	dimensions = Vector2D(w, h);
-	SDL_GetRendererOutputSize(renderer, &windowW, &windowH);
+	SDL_GetRendererOutputSize(Game::getRenderer(), &windowW, &windowH);
 	aDown = dDown = false;
 	Up = up; Down = down; Left = left; Right = right; Attack = attack;
 }
@@ -105,7 +104,7 @@ void GameObject::Render() {
 		else 
 			destR.w *= 1.4;
 	}
-	SDL_RenderCopy(renderer, objectTex, NULL, &destR);
+	SDL_RenderCopy(Game::getRenderer(), objectTex, NULL, &destR);
 	collider->getPrevPos();
 }
 

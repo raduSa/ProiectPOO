@@ -19,7 +19,7 @@ class Game {
 	int cnt = 0;
 	bool isRunning;
 	SDL_Window* window;
-	SDL_Renderer* renderer;
+	static SDL_Renderer* renderer;
 	SDL_Texture* backgroundTex;
 	GameObject* player;
 	GameObject* enemy;
@@ -33,5 +33,6 @@ public:
 	void render();
 	void clean();
 	bool running() const { return isRunning; }
+	static SDL_Renderer* getRenderer() { return renderer; }
 	friend std::istream& operator>>(std::istream& in, Game* game);
 };
