@@ -6,6 +6,7 @@
 #include "StateManager.h"
 #include "TextureManager.h"
 #include "Game.h"
+#include "Attack.h"
 #include <string>
 
 class TextureManager;
@@ -18,20 +19,21 @@ class GameObject {
 	Vector2D velocity;
 	Vector2D dimensions;// width/height
 	static float speed;
-	bool aDown, dDown, atckDown;
-	SDL_KeyCode Up, Down, Left, Right, Atck;
+	bool aDown, dDown, punchDown, kickDown;
+	SDL_KeyCode Up, Down, Left, Right, PUNCH, KICK;
 	TextureManager* texture;
 	Collider* collider;
 	StateManager* state;
 	SDL_Texture* objectTex;
 	SDL_Rect destR;
 	int windowW, windowH;
+	GameObject* other;
 	void updateDestR();
 	static void calculatePos(GameObject* player) { player->position += player->velocity * speed; }
 
 public:
 	GameObject(std::string folder, int x, int y, int w, int h, bool isTurned, 
-		const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right, const SDL_KeyCode& attack);
+		const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right, const SDL_KeyCode& punch, const SDL_KeyCode& kick);
 	~GameObject() { delete texture; delete state; delete collider; }
 	void Update();
 	void MoveX();
@@ -47,5 +49,6 @@ public:
 	Collider* getCollider() const { return collider; }
 	SDL_Texture** getTexturePointer() { return &objectTex; }
 	StateManager* getState() const { return state; }
+	void setOtherPlayer(GameObject* oth) { other = oth; }
 	friend std::istream& operator>>(std::istream& in, GameObject player);
 };

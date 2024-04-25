@@ -9,12 +9,15 @@ bool StateManager::countDown(int& x) {
 	return false;
 }
 
-StateManager::StateManager(bool isTurned) : isJumping(0), isCrouching(false), isAttacking(0), isHit(0), isTurned(isTurned) {}
+StateManager::StateManager(bool isTurned) : isJumping(0), isCrouching(false), isAttacking(0), isHit(0),
+isTurned(isTurned), isKicking(false), isPunching(false) {}
 
 void StateManager::update() {
 	countDown(isJumping);
 	countDown(isHit);
 	if (countDown(isAttacking)) {
+		isPunching = false;
+		isKicking = false;
 		flipCanAct();
 	}
 }

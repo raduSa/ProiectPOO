@@ -1,26 +1,57 @@
 #include "Attack.h"
 
-Attack::Attack(GameObject* player) : attacker(player)
-{
-	SDL_SetTextureColorMod(tex, 255, 0, 0); drawHitbox();
-};
+SDL_Texture* Attack::tex = nullptr;
 
-void Attack::drawHitbox() {
-	SDL_Rect* destR = attacker->getDestRPointer();
-	// get a red texture
+Attack::Attack(GameObject* player, GameObject* enemy) : attacker(player), attacked(enemy) { std::cout << "Attack created!\n"; }
+
+void Attack::setAttackTexture() {
 	SDL_Surface* surface = SDL_CreateRGBSurface(0, 640, 480, 32, 0, 0, 0, 0);
-	SDL_FillRect(surface, nullptr, SDL_MapRGB(surface->format, 255, 0, 0));
+	SDL_FillRect(surface, nullptr, SDL_MapRGB(surface->format, 255, 0, 0)); // color
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::getRenderer(), surface);
-	SDL_Rect hitbox;
+	tex = texture;
+}
+
+void Attack::checkHit() const {
+	if (Collider::collision(hitbox, *(attacked->getDestRPointer())))
+		std::cout << "HIT!\n";
+}
+
+void Punch::getBoxDimensions() {
+	SDL_Rect* destR = attacker->getDestRPointer();
 	hitbox.y = destR->y;
 	hitbox.h = destR->h * 0.3;
 	hitbox.w = destR->w * 0.4;
 	if (attacker->getState()->IsTurned()) {
 		hitbox.x = destR->x - hitbox.w;
 	}
-	else 
+	else
 		hitbox.x = destR->x + destR->w;
-	
-	SDL_RenderCopy(Game::getRenderer(), texture, NULL, &hitbox);
+}
+
+void Kick::getBoxDimensions() {
+	SDL_Rect* destR = attacker->getDestRPointer();
+	hitbox.y = destR->y;
+	hitbox.h = destR->h * 0.4;
+	hitbox.w = destR->w * 1;
+	if (attacker->getState()->IsTurned()) {
+		hitbox.x = destR->x - hitbox.w;
+	}
+	else
+		hitbox.x = destR->x + destR->w;
+}
+
+void Punch::drawHitbox() {
+	std::cout << "Punch\n";
+	getBoxDimensions();
+	checkHit();
+	SDL_RenderCopy(Game::getRenderer(), tex, NULL, &hitbox);
+	delete this;
+}
+
+void Kick::drawHitbox() {
+	std::cout << "Kick\n";
+	getBoxDimensions();
+	checkHit();
+	SDL_RenderCopy(Game::getRenderer(), tex, NULL, &hitbox);
 	delete this;
 }

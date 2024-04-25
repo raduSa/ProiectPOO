@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Attack.h"
 
 SDL_Renderer* Game::renderer = nullptr;
 
@@ -27,8 +28,11 @@ void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 		isRunning = true;
 	}
 	else { isRunning = false; }
-	player = new GameObject("player", 0, height - 256, 200, 450, false, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e);
-	enemy = new GameObject("enemy", width - 128, height - 256, 200, 450, true, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1);
+	Attack::setAttackTexture();
+	player = new GameObject("player", 0, height - 256, 200, 450, false, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e, SDLK_r);
+	enemy = new GameObject("enemy", width - 128, height - 256, 200, 450, true, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1, SDLK_KP_2);
+	player->setOtherPlayer(enemy);
+	enemy->setOtherPlayer(player);
 
 }
 

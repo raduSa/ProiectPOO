@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 	try {
 		game->init("Title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, false);
 	}
-	catch (const textureException& e) {
+	catch (const textureException& e) { // upcasting
 		std::cout << "\nInitialisation Failed: " << e.what() << std::endl;
 		return 0;
 	}
