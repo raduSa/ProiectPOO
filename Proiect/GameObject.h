@@ -11,6 +11,7 @@
 class TextureManager;
 class StateManager;
 class Collider;
+class Attack;
 
 class GameObject {
 	Vector2D position;
@@ -18,7 +19,7 @@ class GameObject {
 	Vector2D dimensions;// width/height
 	static float speed;
 	bool aDown, dDown, atckDown;
-	SDL_KeyCode Up, Down, Left, Right, Attack;
+	SDL_KeyCode Up, Down, Left, Right, Atck;
 	TextureManager* texture;
 	Collider* collider;
 	StateManager* state;

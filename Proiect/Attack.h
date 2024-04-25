@@ -4,15 +4,11 @@
 class Attack
 {
 	GameObject* attacker;
-	GameObject* attacked;
-	SDL_Renderer* renderer;
+	SDL_Texture* tex;
 public:
-	Attack() {};
-	virtual ~Attack() {};
+	Attack(GameObject* player);
+	~Attack() { std::cout << "Deleted attack!\n"; }
 
-	virtual void drawHitbox() {
-		SDL_Rect hitbox;
-		SDL_RenderCopy(renderer, NULL, NULL, &hitbox);
-	}
+	void drawHitbox();
 };
 

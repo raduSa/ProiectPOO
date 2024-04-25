@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Attack.h"
 
 float GameObject::speed = 5;
 
@@ -19,7 +20,7 @@ GameObject::GameObject(std::string folder, int x, int y, int w, int h, bool isTu
 	dimensions = Vector2D(w, h);
 	SDL_GetRendererOutputSize(Game::getRenderer(), &windowW, &windowH);
 	aDown = dDown = false;
-	Up = up; Down = down; Left = left; Right = right; Attack = attack;
+	Up = up; Down = down; Left = left; Right = right; Atck = attack;
 }
 
 void GameObject::Update() {
@@ -78,7 +79,7 @@ void GameObject::handleInput(const SDL_Event& event) {
 			aDown = true;
 		if (event.key.keysym.sym == Right)
 			dDown = true;
-		if (event.key.keysym.sym == Attack && !state->IsJumping()) {
+		if (event.key.keysym.sym == Atck && !state->IsJumping()) {
 			state->attack();
 			state->flipCanAct();
 		}
@@ -103,6 +104,7 @@ void GameObject::Render() {
 		}
 		else 
 			destR.w *= 1.4;
+		Attack* temp = new Attack(this);
 	}
 	SDL_RenderCopy(Game::getRenderer(), objectTex, NULL, &destR);
 	collider->getPrevPos();
