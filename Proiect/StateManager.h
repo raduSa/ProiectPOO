@@ -8,9 +8,10 @@ class StateManager {
 	bool isPunching;
 	bool isKicking;
 	bool canAct = true;
-	bool countDown(int& x);
-	bool isAirborne;
+	bool isAirborne = false;
 	bool isTurned;
+	bool countDown(int& x);
+
 public:
 	StateManager(bool);
 	~StateManager() {}
@@ -18,9 +19,9 @@ public:
 	void jump() { isJumping = 20; }
 	void crouch() { isCrouching = true; }
 	void attack() { isAttacking = 50; }
-	void punch() { isPunching = true; isAttacking = 50; }
-	void kick() { isKicking = true; isAttacking = 100; }
-	void getsHit() { isHit = 10; }
+	void punch() { isPunching = true; isAttacking = 10; }
+	void kick() { isKicking = true; isAttacking = 20; }
+	void getsHit();
 	void airborne() { isAirborne = true; }
 	void noCrouch() { isCrouching = false; }
 	void flipCanAct() { canAct ^= 1; }
@@ -32,5 +33,7 @@ public:
 	bool IsPunching() const { return isPunching; }
 	bool IsKicking() const { return isKicking; }
 	bool IsTurned() const { return isTurned; }
+	bool IsAirborne() const { return isAirborne; }
+	bool IsHit() const { return isHit; }
 	friend std::ostream& operator<< (std::ostream& out, const StateManager& state);
 };

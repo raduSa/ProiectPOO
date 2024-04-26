@@ -24,58 +24,61 @@ GameObject::GameObject(std::string folder, int x, int y, int w, int h, bool isTu
 }
 
 void GameObject::Update() {
-	if (position.getY() > windowH - dimensions.getY())
-		state->airborne();
 	state->update();
-	std::cout << *state;
 	texture->update();
 	//std::cout << *collider;
 	//collider->update() - for changes in hitbox based on state
+	// check for airborne player
+	if (position.getY() < windowH - dimensions.getY())
+		state->airborne();
+	std::cout << *state;
 }
 
 void GameObject::MoveX() {
-	if (state->CanAct()) {
-		// save previous pos in case of collision
-		collider->setPrevPos();
-		// get new velocity and pos
-		velocity.clear();
+	// save previous pos in case of collision
+	collider->setPrevPos();
+	// get new velocity and pos
+	velocity.clear();
+	if (state->CanAct())
 		velocity.setX(0 + dDown - aDown);
-		calculatePos(this);
-		// check collisions with screen edges
-		if (position.getX() < 0)
-			position.setX(0);
-		if (position.getX() > windowW - dimensions.getX())
-			position.setX(windowW - dimensions.getX());
-		// update the collision box
-		updateDestR();
-		if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }//state : crouch
-	}
+	if (state->IsHit())
+		if (state->IsTurned())
+			velocity.setX(0.5);
+		else
+			velocity.setX(-0.5);
+	calculatePos(this);
+	// check collisions with screen edges
+	if (position.getX() < 0)
+		position.setX(0);
+	if (position.getX() > windowW - dimensions.getX())
+		position.setX(windowW - dimensions.getX());
+	// update the collision box
+	updateDestR();
+	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }//state : crouch
 }
 
 void GameObject::MoveY() {
-	if (state->CanAct()) {
-		//if (state->IsCrouching()) { destR.y -= destR.h; destR.h *= 2; }//uncrouch - idk if this is needed
-		collider->setPrevPos();
-		// get new velocity and pos, considering jumping
-		velocity.clear();
-		if (state->IsJumping())//state : jump
-			velocity.setY(-2.5);
-		else
-			velocity.setY(2.5);
-		calculatePos(this);
-		// check collision with the bottom of the screen
-		if (position.getY() > windowH - dimensions.getY())
-			position.setY(windowH - dimensions.getY());
-		if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }
-		// update collision box
-		updateDestR();
-		if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }
-	}
+	//if (state->IsCrouching()) { destR.y -= destR.h; destR.h *= 2; }//uncrouch - idk if this is needed
+	collider->setPrevPos();
+	// get new velocity and pos, considering jumping
+	velocity.clear();
+	if (state->IsJumping())//state : jump
+		velocity.setY(-2.5);
+	else
+		velocity.setY(2.5);
+	calculatePos(this);
+	// check collision with the bottom of the screen
+	if (position.getY() > windowH - dimensions.getY())
+		position.setY(windowH - dimensions.getY());
+	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }
+	// update collision box
+	updateDestR();
+	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }
 }
 
 void GameObject::handleInput(const SDL_Event& event) {
 	if (event.type == SDL_KEYDOWN && state->CanAct()) {
-		if (event.key.keysym.sym == Up && position.getY() == windowH - dimensions.getY())
+		if (event.key.keysym.sym == Up && !state->IsAirborne())
 			state->jump();
 		if (event.key.keysym.sym == Down && !state->IsJumping())
 			state->crouch();
@@ -83,14 +86,14 @@ void GameObject::handleInput(const SDL_Event& event) {
 			aDown = true;
 		if (event.key.keysym.sym == Right)
 			dDown = true;
-		if (event.key.keysym.sym == PUNCH && !state->IsJumping()) {
+		if (event.key.keysym.sym == PUNCH && !state->IsAirborne()) {
 			if (!punchDown) {
 				state->punch();
 				state->flipCanAct();
 			}
 			punchDown = true;
 		}
-		if (event.key.keysym.sym == KICK && !state->IsJumping()) {
+		if (event.key.keysym.sym == KICK && !state->IsAirborne()) {
 			if (!kickDown) {
 				state->kick();
 				state->flipCanAct();

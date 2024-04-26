@@ -12,11 +12,14 @@ void Attack::setAttackTexture() {
 }
 
 void Attack::checkHit() const {
-	if (Collider::collision(hitbox, *(attacked->getDestRPointer())))
+	if (Collider::collision(hitbox, *(attacked->getDestRPointer()))) {
 		std::cout << "HIT!\n";
+		attacked->getState()->getsHit();
+	}
 }
 
 void Punch::getBoxDimensions() {
+	std::cout << "Punch\n";
 	SDL_Rect* destR = attacker->getDestRPointer();
 	hitbox.y = destR->y;
 	hitbox.h = destR->h * 0.3;
@@ -29,6 +32,7 @@ void Punch::getBoxDimensions() {
 }
 
 void Kick::getBoxDimensions() {
+	std::cout << "Kick\n";
 	SDL_Rect* destR = attacker->getDestRPointer();
 	hitbox.y = destR->y;
 	hitbox.h = destR->h * 0.4;
@@ -40,16 +44,7 @@ void Kick::getBoxDimensions() {
 		hitbox.x = destR->x + destR->w;
 }
 
-void Punch::drawHitbox() {
-	std::cout << "Punch\n";
-	getBoxDimensions();
-	checkHit();
-	SDL_RenderCopy(Game::getRenderer(), tex, NULL, &hitbox);
-	delete this;
-}
-
-void Kick::drawHitbox() {
-	std::cout << "Kick\n";
+void Attack::drawHitbox() {
 	getBoxDimensions();
 	checkHit();
 	SDL_RenderCopy(Game::getRenderer(), tex, NULL, &hitbox);
