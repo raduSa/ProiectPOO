@@ -10,6 +10,7 @@ class StateManager {
 	bool canAct = true;
 	bool isAirborne = false;
 	bool isTurned;
+	bool canTakeDamage = true;
 	bool countDown(int& x);
 
 public:
@@ -25,6 +26,7 @@ public:
 	void airborne() { isAirborne = true; }
 	void noCrouch() { isCrouching = false; }
 	void flipCanAct() { canAct ^= 1; }
+	void flipCanTakeDamage() { canTakeDamage ^= 1; }
 	void turn() { isTurned ^= 1; }
 	bool CanAct() const { return canAct; }
 	bool IsJumping() const { return bool(isJumping); }
@@ -35,5 +37,6 @@ public:
 	bool IsTurned() const { return isTurned; }
 	bool IsAirborne() const { return isAirborne; }
 	bool IsHit() const { return isHit; }
+	bool CanTakeDamage() const { return canTakeDamage; }
 	friend std::ostream& operator<< (std::ostream& out, const StateManager& state);
 };

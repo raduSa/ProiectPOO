@@ -9,26 +9,31 @@ protected:
 	GameObject* attacked;
 	static SDL_Texture* tex;
 	SDL_Rect hitbox;
+	virtual void getBoxDimensions() = 0;
+	virtual void dealDMG() = 0;
 public:
 	Attack(GameObject*, GameObject*);
 	virtual ~Attack() { std::cout << "Deleted attack!\n"; }
 	static void setAttackTexture();
 	
 	void drawHitbox();
-	virtual void getBoxDimensions() = 0;
-	void checkHit() const;
+	bool checkHit() const;
 };
 
 class Punch : public Attack {
+private:
+	void getBoxDimensions();
+	void dealDMG();
 public:
 	Punch(GameObject* attacker, GameObject* attacked) : Attack(attacker, attacked) {}
 	~Punch() {}
-	void getBoxDimensions();
 };
 
 class Kick : public Attack {
+private:
+	void getBoxDimensions();
+	void dealDMG();
 public:
 	Kick(GameObject* attacker, GameObject* attacked) : Attack(attacker, attacked) {}
 	~Kick() {}
-	void getBoxDimensions();
 };

@@ -11,11 +11,13 @@ void Attack::setAttackTexture() {
 	tex = texture;
 }
 
-void Attack::checkHit() const {
+bool Attack::checkHit() const {
 	if (Collider::collision(hitbox, *(attacked->getDestRPointer()))) {
 		std::cout << "HIT!\n";
 		attacked->getState()->getsHit();
+		return true;
 	}
+	return false;
 }
 
 void Punch::getBoxDimensions() {
@@ -45,8 +47,19 @@ void Kick::getBoxDimensions() {
 }
 
 void Attack::drawHitbox() {
-	getBoxDimensions();
-	checkHit();
+	getBoxDimensions(); // polimorfism
+	if (checkHit() && attacked->getState()->CanTakeDamage())
+		dealDMG();
 	SDL_RenderCopy(Game::getRenderer(), tex, NULL, &hitbox);
 	delete this;
+}
+
+void Punch::dealDMG() {
+	attacked->drainHP(10);
+	attacked->getState()->flipCanTakeDamage();
+}
+
+void Kick::dealDMG() {
+	attacked->drainHP(20);
+	attacked->getState()->flipCanTakeDamage();
 }

@@ -23,7 +23,7 @@ void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 		if (TextureManager::FileExists("assets/background.png"))
 			backgroundTex = TextureManager::LoadTexture("assets/background.png");
 		else
-			throw *(new BackgroundTexExc());
+			throw *(new BackgroundTexExc()); // polimorfism
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		isRunning = true;
 	}
@@ -33,7 +33,11 @@ void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 	enemy = new GameObject("enemy", width - 128, height - 256, 200, 450, true, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1, SDLK_KP_2);
 	player->setOtherPlayer(enemy);
 	enemy->setOtherPlayer(player);
-
+	HPBar::setBarTextures();
+	playerHP = new PlayerHPBar(player, width);
+	playerHP->getBarLocation();
+	enemyHP = new EnemyHPBar(enemy, width);
+	enemyHP->getBarLocation();
 }
 
 void Game::handleEvents() {
@@ -83,6 +87,8 @@ void Game::render() {
 	SDL_RenderCopy(renderer, backgroundTex, NULL, NULL);
 	player->Render();
 	enemy->Render();
+	playerHP->drawBar();
+	enemyHP->drawBar();
 	SDL_RenderPresent(renderer);
 }
 

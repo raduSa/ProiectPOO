@@ -6,6 +6,7 @@
 #include <exception>
 #include "GameObject.h"
 #include "textureException.h"
+#include "HPBar.h"
 
 class BackgroundTexExc : public textureException {
 public:
@@ -14,6 +15,8 @@ public:
 	}
 	~BackgroundTexExc() {}
 };
+
+class HPBar;
 
 class Game {
 	int cnt = 0;
@@ -24,6 +27,8 @@ class Game {
 	GameObject* player;
 	GameObject* enemy;
 	int width, height;
+	HPBar* playerHP;
+	HPBar* enemyHP;
 	void turnPlayers();
 public:
 	Game() { width = 0; height = 0; }

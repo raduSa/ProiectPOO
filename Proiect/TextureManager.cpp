@@ -8,7 +8,7 @@ TextureManager::TextureManager(GameObject* player, std::string folder) :
 	if (TextureManager::FileExists("assets/" + folder + "/idle.png"))
 		idle = TextureManager::LoadTexture("assets/" + folder + "/idle.png");
 	else 
-		throw* (new GameObjectTexExc(folder, "idle"));
+		throw* (new GameObjectTexExc(folder, "idle")); // polimorfism
 
 	if (TextureManager::FileExists("assets/" + folder + "/crouch.png"))
 		crouch = TextureManager::LoadTexture("assets/" + folder + "/crouch.png");
@@ -19,6 +19,11 @@ TextureManager::TextureManager(GameObject* player, std::string folder) :
 		punch = TextureManager::LoadTexture("assets/" + folder + "/punch.png");
 	else
 		throw* (new GameObjectTexExc(folder, "punch"));
+
+	if (TextureManager::FileExists("assets/" + folder + "/kick.png"))
+		kick = TextureManager::LoadTexture("assets/" + folder + "/kick.png");
+	else
+		throw* (new GameObjectTexExc(folder, "kick"));
 	// inverted textures
 	if (TextureManager::FileExists("assets/" + folder + "/idleInverted.png"))
 		idleInverted = TextureManager::LoadTexture("assets/" + folder + "/idleInverted.png");
@@ -34,6 +39,11 @@ TextureManager::TextureManager(GameObject* player, std::string folder) :
 		punchInverted = TextureManager::LoadTexture("assets/" + folder + "/punchInverted.png");
 	else
 		throw* (new GameObjectTexExc(folder, "punchInverted"));
+
+	if (TextureManager::FileExists("assets/" + folder + "/kickInverted.png"))
+		kickInverted = TextureManager::LoadTexture("assets/" + folder + "/kickInverted.png");
+	else
+		throw* (new GameObjectTexExc(folder, "kickInverted"));
 }
 TextureManager::~TextureManager() { SDL_DestroyTexture(idle); SDL_DestroyTexture(crouch); }
 
@@ -59,7 +69,10 @@ void TextureManager::update() {
 			*objectTex = crouchInverted;
 		}
 		else if (state->IsAttacking())
-			*objectTex = punchInverted;
+			if (state->IsPunching())
+				*objectTex = punchInverted;
+			else
+				*objectTex = kickInverted;
 		else
 			*objectTex = idleInverted;
 	}
@@ -68,7 +81,10 @@ void TextureManager::update() {
 			*objectTex = crouch;
 		}
 		else if (state->IsAttacking())
-			*objectTex = punch;
+			if (state->IsPunching())
+				*objectTex = punch;
+			else
+				*objectTex = kick;
 		else
 			*objectTex = idle;
 	}

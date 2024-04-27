@@ -21,6 +21,7 @@ void StateManager::update() {
 		flipCanAct();
 	}
 	if (countDown(isHit)) {
+		flipCanTakeDamage();
 		flipCanAct();
 	}
 }

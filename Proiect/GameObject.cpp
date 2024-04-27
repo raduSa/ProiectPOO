@@ -32,6 +32,7 @@ void GameObject::Update() {
 	if (position.getY() < windowH - dimensions.getY())
 		state->airborne();
 	std::cout << *state;
+	std::cout << "HP: " << HP << "\n";
 }
 
 void GameObject::MoveX() {
@@ -125,7 +126,8 @@ void GameObject::Render() {
 		}
 		else 
 			destR.w *= 1.4;
-
+		if (state->IsKicking())
+			destR.w *= 1.3;
 		Attack* temp = nullptr;
 		if (state->IsPunching())
 			temp = new Punch(this, other); // upcasting
@@ -139,6 +141,12 @@ void GameObject::Render() {
 
 void GameObject::revertPos() {
 	collider->getPrevPos();
+}
+
+void GameObject::drainHP(const int& x) {
+	/*if (state->IsBlocking())
+		x /= 4;*/
+	HP -= x;
 }
 
 std::istream& operator>>(std::istream& in, GameObject player) {

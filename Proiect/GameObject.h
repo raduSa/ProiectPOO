@@ -28,6 +28,7 @@ class GameObject {
 	SDL_Rect destR;
 	int windowW, windowH;
 	GameObject* other;
+	int HP = 100;
 	void updateDestR();
 	static void calculatePos(GameObject* player) { player->position += player->velocity * speed; }
 
@@ -41,6 +42,7 @@ public:
 	void handleInput(const SDL_Event& event);
 	void Render();
 	void revertPos();
+	void drainHP(const int&);
 
 	Vector2D getPos() const { return position; }
 	Vector2D* getPosPointer() { return &position; }
@@ -49,6 +51,7 @@ public:
 	Collider* getCollider() const { return collider; }
 	SDL_Texture** getTexturePointer() { return &objectTex; }
 	StateManager* getState() const { return state; }
+	int getHP() const { return HP; }
 	void setOtherPlayer(GameObject* oth) { other = oth; }
 	friend std::istream& operator>>(std::istream& in, GameObject player);
 };
