@@ -30,6 +30,7 @@ class Game {
 	HPBar* playerHP;
 	HPBar* enemyHP;
 	void turnPlayers();
+	void checkHP();
 public:
 	Game() { width = 0; height = 0; }
 	void init(const char* title, int xpos, int ypos, bool fullscreen);
@@ -38,6 +39,7 @@ public:
 	void render();
 	void clean();
 	bool running() const { return isRunning; }
+	void stopGame() { isRunning = false; }
 	static SDL_Renderer* getRenderer() { return renderer; }
 	friend std::istream& operator>>(std::istream& in, Game* game);
 };

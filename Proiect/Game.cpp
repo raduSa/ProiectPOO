@@ -11,6 +11,17 @@ void Game::turnPlayers() {
 	}
 }
 
+void Game::checkHP() {
+	if (player->getHP() <= 0) {
+		isRunning = false;
+		std::cout << "P2 Won!\n";
+	}
+	else if (enemy->getHP() <= 0) {
+		isRunning = false;
+		std::cout << "P1 Won!\n";
+	}	
+}
+
 void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 	int flags = 0;
 	std::cout << width << " " << height;
@@ -90,6 +101,7 @@ void Game::render() {
 	playerHP->drawBar();
 	enemyHP->drawBar();
 	SDL_RenderPresent(renderer);
+	checkHP();
 }
 
 void Game::clean() {
