@@ -1,49 +1,22 @@
 #include "TextureManager.h"
 #include <fstream>
+#include <vector>
+#include <utility>
 
 TextureManager::TextureManager(GameObject* player, std::string folder) :
 	objectTex(player->getTexturePointer()), state(player->getState()) {
 	SDL_Renderer* ren = Game::getRenderer();
-	// normal textures
-	if (TextureManager::FileExists("assets/" + folder + "/idle.png"))
-		idle = TextureManager::LoadTexture("assets/" + folder + "/idle.png");
-	else 
-		throw* (new GameObjectTexExc(folder, "idle")); // polimorfism
+	std::vector<std::pair<SDL_Texture**, std::string>> textures =
+	{ {&idle, "idle"}, {&idleInverted, "idleInverted"}, {&crouch, "crouch"}, {&crouchInverted, "crouchInverted"},
+	{&punch, "punch"}, {&punchInverted, "punchInverted"}, {&kick, "kick"}, {&kickInverted, "kickInverted"},
+	{&crouchPunch, "crouchPunch"}, {&crouchPunchInverted, "crouchPunchInverted"},
+	{&crouchKick, "crouchKick"}, {&crouchKickInverted, "crouchKickInverted"} };
 
-	if (TextureManager::FileExists("assets/" + folder + "/crouch.png"))
-		crouch = TextureManager::LoadTexture("assets/" + folder + "/crouch.png");
-	else
-		throw* (new GameObjectTexExc(folder, "crouch"));
-
-	if (TextureManager::FileExists("assets/" + folder + "/punch.png"))
-		punch = TextureManager::LoadTexture("assets/" + folder + "/punch.png");
-	else
-		throw* (new GameObjectTexExc(folder, "punch"));
-
-	if (TextureManager::FileExists("assets/" + folder + "/kick.png"))
-		kick = TextureManager::LoadTexture("assets/" + folder + "/kick.png");
-	else
-		throw* (new GameObjectTexExc(folder, "kick"));
-	// inverted textures
-	if (TextureManager::FileExists("assets/" + folder + "/idleInverted.png"))
-		idleInverted = TextureManager::LoadTexture("assets/" + folder + "/idleInverted.png");
-	else
-		throw* (new GameObjectTexExc(folder, "idleInverted"));
-
-	if (TextureManager::FileExists("assets/" + folder + "/crouchInverted.png"))
-		crouchInverted = TextureManager::LoadTexture("assets/" + folder + "/crouchInverted.png");
-	else
-		throw* (new GameObjectTexExc(folder, "crouchInverted"));
-
-	if (TextureManager::FileExists("assets/" + folder + "/punchInverted.png"))
-		punchInverted = TextureManager::LoadTexture("assets/" + folder + "/punchInverted.png");
-	else
-		throw* (new GameObjectTexExc(folder, "punchInverted"));
-
-	if (TextureManager::FileExists("assets/" + folder + "/kickInverted.png"))
-		kickInverted = TextureManager::LoadTexture("assets/" + folder + "/kickInverted.png");
-	else
-		throw* (new GameObjectTexExc(folder, "kickInverted"));
+	for (auto& pair : textures)
+		if (TextureManager::FileExists("assets/" + folder + "/" + pair.second + ".png"))
+			*pair.first = TextureManager::LoadTexture("assets/" + folder + "/" + pair.second + ".png");
+		else
+			throw* (new GameObjectTexExc(folder, pair.second)); // polimorfism
 }
 TextureManager::~TextureManager() { SDL_DestroyTexture(idle); SDL_DestroyTexture(crouch); }
 
@@ -66,7 +39,14 @@ SDL_Texture* TextureManager::LoadTexture(std::string fileName) {
 void TextureManager::update() {
 	if (state->IsTurned()) {
 		if (state->IsCrouching()) {
-			*objectTex = crouchInverted;
+			if (state->IsAttacking()) {
+				if (state->IsPunching())
+					*objectTex = crouchPunchInverted;
+				else
+					*objectTex = crouchKickInverted;
+			}
+			else
+				*objectTex = crouchInverted;
 		}
 		else if (state->IsAttacking())
 			if (state->IsPunching())
@@ -78,7 +58,14 @@ void TextureManager::update() {
 	}
 	else {
 		if (state->IsCrouching()) {
-			*objectTex = crouch;
+			if (state->IsAttacking()) {
+				if (state->IsPunching())
+					*objectTex = crouchPunch;
+				else
+					*objectTex = crouchKick;
+			}
+			else
+				*objectTex = crouch;
 		}
 		else if (state->IsAttacking())
 			if (state->IsPunching())

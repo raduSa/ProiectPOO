@@ -38,7 +38,9 @@ void Kick::getBoxDimensions() {
 	SDL_Rect* destR = attacker->getDestRPointer();
 	hitbox.y = destR->y;
 	hitbox.h = destR->h * 0.4;
-	hitbox.w = destR->w * 1;
+	hitbox.w = destR->w * 0.7;
+	if (attacker->getState()->IsCrouching())
+		hitbox.y = destR->y + destR->h * 0.6;
 	if (attacker->getState()->IsTurned()) {
 		hitbox.x = destR->x - hitbox.w;
 	}

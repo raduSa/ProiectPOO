@@ -32,6 +32,10 @@ class TextureManager {
 	SDL_Texture* crouchInverted;
 	SDL_Texture* punchInverted;
 	SDL_Texture* kickInverted;
+	SDL_Texture* crouchPunch;
+	SDL_Texture* crouchPunchInverted;
+	SDL_Texture* crouchKick;
+	SDL_Texture* crouchKickInverted;
 	SDL_Texture** objectTex;
 	StateManager* state;
 public:
