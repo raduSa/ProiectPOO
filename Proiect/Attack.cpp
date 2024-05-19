@@ -24,8 +24,8 @@ void Punch::getBoxDimensions() {
 	std::cout << "Punch\n";
 	SDL_Rect* destR = attacker->getDestRPointer();
 	hitbox.y = destR->y;
-	hitbox.h = destR->h * 0.3;
-	hitbox.w = destR->w * 0.4;
+	hitbox.h = (int)(destR->h * 0.3);
+	hitbox.w = (int)(destR->w * 0.4);
 	if (attacker->getState()->IsTurned()) {
 		hitbox.x = destR->x - hitbox.w;
 	}
@@ -37,10 +37,10 @@ void Kick::getBoxDimensions() {
 	std::cout << "Kick\n";
 	SDL_Rect* destR = attacker->getDestRPointer();
 	hitbox.y = destR->y;
-	hitbox.h = destR->h * 0.4;
-	hitbox.w = destR->w * 0.7;
+	hitbox.h = (int)(destR->h * 0.4);
+	hitbox.w = (int)(destR->w * 0.7);
 	if (attacker->getState()->IsCrouching())
-		hitbox.y = destR->y + destR->h * 0.6;
+		hitbox.y = destR->y + (int)(destR->h * 0.6);
 	if (attacker->getState()->IsTurned()) {
 		hitbox.x = destR->x - hitbox.w;
 	}

@@ -11,7 +11,9 @@ class StateManager {
 	bool isAirborne = false;
 	bool isTurned;
 	bool canTakeDamage = true;
-	bool countDown(int& x);
+	bool wantsToStand = false;
+	bool isSquashed = false;
+	bool countDown(int&);
 
 public:
 	StateManager(bool);
@@ -28,6 +30,10 @@ public:
 	void flipCanAct() { canAct ^= 1; }
 	void flipCanTakeDamage() { canTakeDamage ^= 1; }
 	void turn() { isTurned ^= 1; }
+	void WantsToStand() { wantsToStand = true; }
+	void DoesntWantToStand() { wantsToStand = false; }
+	void IsSquashed() { isSquashed = true; }
+	void IsNotSquashed() { isSquashed = false; }
 	bool CanAct() const { return canAct; }
 	bool IsJumping() const { return bool(isJumping); }
 	bool IsCrouching() const { return isCrouching; }

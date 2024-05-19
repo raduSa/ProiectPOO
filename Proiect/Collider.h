@@ -13,7 +13,7 @@ class Collider {
 	Vector2D* position;
 	Vector2D prevPos;
 public:
-	Collider(GameObject* player);
+ 	Collider(GameObject* player);
 	~Collider() { delete position; delete destR; }
 	static bool collision(const SDL_Rect& recA, const SDL_Rect& recB);
 	void setPrevPos();

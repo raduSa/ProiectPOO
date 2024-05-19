@@ -24,6 +24,9 @@ GameObject::GameObject(std::string folder, int x, int y, int w, int h, bool isTu
 }
 
 void GameObject::Update() {
+	if (other->getDestRPointer()->y + other->getDestRPointer()->h <= destR.y)
+		state->IsSquashed();
+	else state->IsNotSquashed();
 	state->update();
 	texture->update();
 	//std::cout << *collider;
@@ -81,8 +84,11 @@ void GameObject::handleInput(const SDL_Event& event) {
 	if (event.type == SDL_KEYDOWN && state->CanAct()) {
 		if (event.key.keysym.sym == Up && !state->IsAirborne())
 			state->jump();
-		if (event.key.keysym.sym == Down && !state->IsJumping())
+		if (event.key.keysym.sym == Down && !state->IsJumping()) {
 			state->crouch();
+			state->DoesntWantToStand();
+		}
+			
 		if (event.key.keysym.sym == Left)
 			aDown = true;
 		if (event.key.keysym.sym == Right)
@@ -104,7 +110,7 @@ void GameObject::handleInput(const SDL_Event& event) {
 	}
 	if (event.type == SDL_KEYUP) {
 		if (event.key.keysym.sym == Down)
-			state->noCrouch();
+			state->WantsToStand();
 		if (event.key.keysym.sym == Left)
 			aDown = false;
 		if (event.key.keysym.sym == Right)
@@ -120,14 +126,10 @@ void GameObject::Render() {
 	// if player is attacking, draw the model wider (doesnt affect the hitbox)
 	collider->setPrevPos();
 	if (state->IsAttacking()) {
-		if (state->IsTurned()) {
-			destR.x -= 0.4 * destR.w;
-			destR.w *= 1.4;
-		}
-		else 
-			destR.w *= 1.4;
-		if (state->IsKicking())
-			destR.w *= 1.3;
+		float widthIncrease = 1.4 * state->IsPunching() + 1.8 * state->IsKicking();
+		if (state->IsTurned())
+			destR.x -= (widthIncrease - 1) * destR.w;
+		destR.w *= widthIncrease;
 		Attack* temp = nullptr;
 		if (state->IsPunching())
 			temp = new Punch(this, other); // upcasting

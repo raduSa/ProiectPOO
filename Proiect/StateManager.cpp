@@ -24,6 +24,10 @@ void StateManager::update() {
 		flipCanTakeDamage();
 		flipCanAct();
 	}
+	if (wantsToStand && !isSquashed && canAct) {
+		isCrouching = false;
+		wantsToStand = false;
+	}
 }
 
 void StateManager::getsHit() {
