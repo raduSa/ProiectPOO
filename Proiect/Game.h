@@ -19,6 +19,7 @@ public:
 class HPBar;
 
 class Game {
+	static Game* instance;
 	int cnt = 0;
 	bool isRunning;
 	SDL_Window* window;
@@ -31,8 +32,12 @@ class Game {
 	HPBar* enemyHP;
 	void turnPlayers();
 	void checkHP();
-public:
+
 	Game() { width = 0; height = 0; }
+	Game(const Game&) = delete;
+	Game& operator=(Game&) = delete;
+public:
+	static Game* instantiate();
 	void init(const char* title, int xpos, int ypos, bool fullscreen);
 	void handleEvents();
 	void update();

@@ -1,7 +1,14 @@
 #include "Game.h"
 #include "Attack.h"
 
+Game* Game::instance = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
+
+Game* Game::instantiate() {
+	if (instance == nullptr)
+		instance = new Game();
+	return instance;
+}
 
 void Game::turnPlayers() {
 	if (((player->getPos().getX() + player->getDim().getX() / 2) * (-(player->getState()->IsTurned() * 2 - 1)) -

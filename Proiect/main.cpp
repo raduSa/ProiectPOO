@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 	Uint32 frameStart;
 	int frameTime;
 
-	Game* game = new Game();
+	Game* game = Game::instantiate();
 	input >> game;
 	try {
 		game->init("Title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, false);

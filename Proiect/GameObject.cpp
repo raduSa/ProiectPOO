@@ -24,6 +24,7 @@ GameObject::GameObject(std::string folder, int x, int y, int w, int h, bool isTu
 }
 
 void GameObject::Update() {
+	// check if other player is right above, making standig up unavailable
 	if (other->getDestRPointer()->y + other->getDestRPointer()->h <= destR.y)
 		state->IsSquashed();
 	else state->IsNotSquashed();
