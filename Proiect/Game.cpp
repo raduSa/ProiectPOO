@@ -29,6 +29,16 @@ void Game::checkHP() {
 	}	
 }
 
+bool Game::collision(const SDL_Rect& recA, const SDL_Rect& recB) {
+	if (recA.x + recA.w > recB.x &&
+		recB.x + recB.w > recA.x &&
+		recA.y + recA.h > recB.y &&
+		recB.y + recB.h > recA.y)
+		return true;
+	return false;
+}
+
+
 void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 	int flags = 0;
 	std::cout << width << " " << height;
@@ -46,15 +56,24 @@ void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 		isRunning = true;
 	}
 	else { isRunning = false; }
+	// initialise helper objs
 	Attack::setAttackTexture();
+	std::shared_ptr<AttackFactory> punchFactory = std::make_shared<PunchFactory>();
+	std::shared_ptr<AttackFactory> kickFactory = std::make_shared<KickFactory>();
+	// create player objs
 	player = new GameObject("player", 0, height - 256, 200, 450, false, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e, SDLK_r);
 	enemy = new GameObject("enemy", width - 128, height - 256, 200, 450, true, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1, SDLK_KP_2);
+	playerHP = new PlayerHPBar(player, width);
+	enemyHP = new EnemyHPBar(enemy, width);
+
 	player->setOtherPlayer(enemy);
 	enemy->setOtherPlayer(player);
+	player->setPunchFactory(punchFactory);
+	player->setKickFactory(kickFactory);
+	enemy->setPunchFactory(punchFactory);
+	enemy->setKickFactory(kickFactory);
 	HPBar::setBarTextures();
-	playerHP = new PlayerHPBar(player, width);
 	playerHP->getBarLocation();
-	enemyHP = new EnemyHPBar(enemy, width);
 	enemyHP->getBarLocation();
 }
 
@@ -79,22 +98,22 @@ void Game::update() {
 	player->Update();
 	// move player along X axis,in case of collision go back
 	player->MoveX();
-	if (Collider::collision(player->getCollider()->getRect(), enemy->getCollider()->getRect()))
+	if (collision(player->getCollider()->getRect(), enemy->getCollider()->getRect()))
 		player->revertPos();
 	// move player along Y axis, in case of collision go back
 	player->MoveY();
-	if (Collider::collision(player->getCollider()->getRect(), enemy->getCollider()->getRect()))
+	if (collision(player->getCollider()->getRect(), enemy->getCollider()->getRect()))
 		player->revertPos();
 	// same with enemy
 	std::cout << "Enemy:\n";
 	enemy->Update();
 
 	enemy->MoveX();
-	if (Collider::collision(enemy->getCollider()->getRect(), player->getCollider()->getRect()))
+	if (collision(enemy->getCollider()->getRect(), player->getCollider()->getRect()))
 		enemy->revertPos();
 
 	enemy->MoveY();
-	if (Collider::collision(enemy->getCollider()->getRect(), player->getCollider()->getRect()))
+	if (collision(enemy->getCollider()->getRect(), player->getCollider()->getRect()))
 		enemy->revertPos();
 	// check if players should turn around
 	turnPlayers();

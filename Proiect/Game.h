@@ -4,9 +4,11 @@
 #include <iostream>
 #include <fstream>
 #include <exception>
+#include <memory>
 #include "GameObject.h"
 #include "textureException.h"
 #include "HPBar.h"
+#include "AttackFactory.h"
 
 class BackgroundTexExc : public textureException {
 public:
@@ -45,6 +47,7 @@ public:
 	void clean();
 	bool running() const { return isRunning; }
 	void stopGame() { isRunning = false; }
+	static bool collision(const SDL_Rect& recA, const SDL_Rect& recB);
 	static SDL_Renderer* getRenderer() { return renderer; }
 	friend std::istream& operator>>(std::istream& in, Game* game);
 };

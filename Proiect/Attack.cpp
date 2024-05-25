@@ -12,7 +12,7 @@ void Attack::setAttackTexture() {
 }
 
 bool Attack::checkHit() const {
-	if (Collider::collision(hitbox, *(attacked->getDestRPointer()))) {
+	if (Game::collision(hitbox, *(attacked->getDestRPointer()))) {
 		std::cout << "HIT!\n";
 		attacked->getState()->getsHit();
 		return true;
@@ -53,7 +53,6 @@ void Attack::drawHitbox() {
 	if (checkHit() && attacked->getState()->CanTakeDamage())
 		dealDMG();
 	SDL_RenderCopy(Game::getRenderer(), tex, NULL, &hitbox);
-	delete this;
 }
 
 void Punch::dealDMG() {

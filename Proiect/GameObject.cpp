@@ -3,11 +3,13 @@
 float GameObject::speed = 5;
 
 void GameObject::updateDestR() {
-	destR.x = position.getX();
-	destR.y = position.getY();
-	destR.h = dimensions.getY();
-	destR.w = dimensions.getX();
+	destR.x = int(position.getX());
+	destR.y = int(position.getY());
+	destR.h = int(dimensions.getY());
+	destR.w = int(dimensions.getX());
 }
+
+void GameObject::calculatePos(GameObject* player) { player->position += player->velocity * speed; }
 
 GameObject::GameObject(std::string folder, int x, int y, int w, int h, bool isTurned,
 	const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right,
@@ -15,9 +17,9 @@ GameObject::GameObject(std::string folder, int x, int y, int w, int h, bool isTu
 	collider = new Collider(this);
 	state = new StateManager(isTurned);
 	texture = new TextureManager(this, folder);
-	position = Vector2D(x, y);
-	velocity = Vector2D();
-	dimensions = Vector2D(w, h);
+	position = Vector2D<float>(x, y);
+	velocity = Vector2D<float>();
+	dimensions = Vector2D<int>(w, h);
 	SDL_GetRendererOutputSize(Game::getRenderer(), &windowW, &windowH);
 	aDown = dDown = punchDown = kickDown = false;
 	Up = up; Down = down; Left = left; Right = right; PUNCH = punch; KICK = kick;
@@ -59,11 +61,10 @@ void GameObject::MoveX() {
 		position.setX(windowW - dimensions.getX());
 	// update the collision box
 	updateDestR();
-	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }//state : crouch
+	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }//update hitbox if crouching
 }
 
 void GameObject::MoveY() {
-	//if (state->IsCrouching()) { destR.y -= destR.h; destR.h *= 2; }//uncrouch - idk if this is needed
 	collider->setPrevPos();
 	// get new velocity and pos, considering jumping
 	velocity.clear();
@@ -75,7 +76,6 @@ void GameObject::MoveY() {
 	// check collision with the bottom of the screen
 	if (position.getY() > windowH - dimensions.getY())
 		position.setY(windowH - dimensions.getY());
-	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }
 	// update collision box
 	updateDestR();
 	if (state->IsCrouching()) { destR.h /= 2; destR.y += destR.h; }
@@ -131,11 +131,11 @@ void GameObject::Render() {
 		if (state->IsTurned())
 			destR.x -= (widthIncrease - 1) * destR.w;
 		destR.w *= widthIncrease;
-		Attack* temp = nullptr;
+		std::unique_ptr<Attack> temp;
 		if (state->IsPunching())
-			temp = new Punch(this, other); // upcasting
+			temp = punchFactory->createAttack(this, other); // upcasting
 		else if (state->IsKicking())
-			temp = new Kick(this, other);
+			temp = kickFactory->createAttack(this, other);
 		temp->drawHitbox();
 	}
 	SDL_RenderCopy(Game::getRenderer(), objectTex, NULL, &destR);
@@ -150,6 +150,14 @@ void GameObject::drainHP(const int& x) {
 	/*if (state->IsBlocking())
 		x /= 4;*/
 	HP -= x;
+}
+
+void GameObject::setPunchFactory(std::shared_ptr<AttackFactory> pF) {
+	punchFactory = pF;
+}
+
+void GameObject::setKickFactory(std::shared_ptr<AttackFactory> kF) {
+	kickFactory = kF;
 }
 
 std::istream& operator>>(std::istream& in, GameObject player) {
