@@ -57,12 +57,13 @@ void Game::init(const char* title, int xpos, int ypos, bool fullscreen) {
 	}
 	else { isRunning = false; }
 	// initialise helper objs
+	//Attack::setAttackTexture({255, 0, 0}); // red hitboxes
 	Attack::setAttackTexture();
 	std::shared_ptr<AttackFactory> punchFactory = std::make_shared<PunchFactory>();
 	std::shared_ptr<AttackFactory> kickFactory = std::make_shared<KickFactory>();
 	// create player objs
-	player = new GameObject("player", 0, height - 256, 200, 450, false, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e, SDLK_r);
-	enemy = new GameObject("enemy", width - 128, height - 256, 200, 450, true, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1, SDLK_KP_2);
+	player = new GameObject("player", 0, height - 256, 200, 450, false, SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_e, SDLK_r, SDLK_t);
+	enemy = new GameObject("enemy", width - 128, height - 256, 200, 450, true, SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP_1, SDLK_KP_2, SDLK_KP_3);
 	playerHP = new PlayerHPBar(player, width);
 	enemyHP = new EnemyHPBar(enemy, width);
 

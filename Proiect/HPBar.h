@@ -20,14 +20,14 @@ public:
 
 class PlayerHPBar : public HPBar {
 public:
-	PlayerHPBar(GameObject* player, const int& w) : HPBar(player, w) {}
+	PlayerHPBar(GameObject*, const int&);
 	~PlayerHPBar() {}
 	void getBarLocation();
 };
 
 class EnemyHPBar : public HPBar {
 public:
-	EnemyHPBar(GameObject* player, const int& w) : HPBar(player, w) {}
+	EnemyHPBar(GameObject*, const int&);
 	~EnemyHPBar() {}
 	void getBarLocation();
 };

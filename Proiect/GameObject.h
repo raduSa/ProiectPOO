@@ -22,7 +22,7 @@ class GameObject {
 	Vector2D<int> dimensions;// width/height
 	static float speed;
 	bool aDown, dDown, punchDown, kickDown;
-	SDL_KeyCode Up, Down, Left, Right, PUNCH, KICK;
+	SDL_KeyCode Up, Down, Left, Right, PUNCH, KICK, BLOCK;
 	TextureManager* texture;
 	Collider* collider;
 	StateManager* state;
@@ -38,7 +38,7 @@ class GameObject {
 
 public:
 	GameObject(std::string folder, int x, int y, int w, int h, bool isTurned, 
-		const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right, const SDL_KeyCode& punch, const SDL_KeyCode& kick);
+		const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right, const SDL_KeyCode& punch, const SDL_KeyCode& kick, const SDL_KeyCode& block);
 	~GameObject() { delete texture; delete state; delete collider; }
 	void Update();
 	void MoveX();

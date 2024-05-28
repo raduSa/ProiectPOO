@@ -13,7 +13,7 @@ void GameObject::calculatePos(GameObject* player) { player->position += player->
 
 GameObject::GameObject(std::string folder, int x, int y, int w, int h, bool isTurned,
 	const SDL_KeyCode& up, const SDL_KeyCode& down, const SDL_KeyCode& left, const SDL_KeyCode& right,
-	const SDL_KeyCode& punch, const SDL_KeyCode& kick) {
+	const SDL_KeyCode& punch, const SDL_KeyCode& kick, const SDL_KeyCode& block) {
 	collider = new Collider(this);
 	state = new StateManager(isTurned);
 	texture = new TextureManager(this, folder);
@@ -22,7 +22,7 @@ GameObject::GameObject(std::string folder, int x, int y, int w, int h, bool isTu
 	dimensions = Vector2D<int>(w, h);
 	SDL_GetRendererOutputSize(Game::getRenderer(), &windowW, &windowH);
 	aDown = dDown = punchDown = kickDown = false;
-	Up = up; Down = down; Left = left; Right = right; PUNCH = punch; KICK = kick;
+	Up = up; Down = down; Left = left; Right = right; PUNCH = punch; KICK = kick; BLOCK = block;
 }
 
 void GameObject::Update() {
@@ -53,6 +53,8 @@ void GameObject::MoveX() {
 			velocity.setX(0.5);
 		else
 			velocity.setX(-0.5);
+	if (state->IsBlocking())
+		velocity /= 2;
 	calculatePos(this);
 	// check collisions with screen edges
 	if (position.getX() < 0)
@@ -83,7 +85,7 @@ void GameObject::MoveY() {
 
 void GameObject::handleInput(const SDL_Event& event) {
 	if (event.type == SDL_KEYDOWN && state->CanAct()) {
-		if (event.key.keysym.sym == Up && !state->IsAirborne())
+		if (event.key.keysym.sym == Up && !state->IsAirborne() && !state->IsBlocking())
 			state->jump();
 		if (event.key.keysym.sym == Down && !state->IsJumping()) {
 			state->crouch();
@@ -108,6 +110,9 @@ void GameObject::handleInput(const SDL_Event& event) {
 			}
 			kickDown = true;
 		}
+		if (event.key.keysym.sym == BLOCK && !state->IsAirborne())
+			state->block();
+			
 	}
 	if (event.type == SDL_KEYUP) {
 		if (event.key.keysym.sym == Down)
@@ -120,6 +125,8 @@ void GameObject::handleInput(const SDL_Event& event) {
 			punchDown = false;
 		if (event.key.keysym.sym == KICK)
 			kickDown = false;
+		if (event.key.keysym.sym == BLOCK)
+			state->noBlock();
 	}
 }
 
@@ -127,16 +134,16 @@ void GameObject::Render() {
 	// if player is attacking, draw the model wider (doesnt affect the hitbox)
 	collider->setPrevPos();
 	if (state->IsAttacking()) {
-		float widthIncrease = 1.4 * state->IsPunching() + 1.8 * state->IsKicking();
-		if (state->IsTurned())
-			destR.x -= (widthIncrease - 1) * destR.w;
-		destR.w *= widthIncrease;
 		std::unique_ptr<Attack> temp;
 		if (state->IsPunching())
 			temp = punchFactory->createAttack(this, other); // upcasting
 		else if (state->IsKicking())
 			temp = kickFactory->createAttack(this, other);
 		temp->drawHitbox();
+		float widthIncrease = 1.6 * state->IsPunching() + 2 * state->IsKicking();
+		if (state->IsTurned())
+			destR.x -= (widthIncrease - 1) * destR.w;
+		destR.w *= widthIncrease;
 	}
 	SDL_RenderCopy(Game::getRenderer(), objectTex, NULL, &destR);
 	collider->getPrevPos();

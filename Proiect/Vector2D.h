@@ -38,6 +38,8 @@ public:
 	template <typename U>
 	Vector2D<T>& operator/=(const Vector2D<U>& vec) { return this->Divide(vec); }
 	template <typename U>
+	Vector2D<T>& operator/=(const U& i) { x /= static_cast<T>(i); y /= static_cast<T>(i); return *this; }
+	template <typename U>
 	Vector2D<T>& operator*(const U& i) { x *= static_cast<T>(i); y *= static_cast<T>(i); return *this; }
 	template <typename U>
 	Vector2D<T>& operator=(Vector2D<U>* vec) { x = static_cast<T>(vec->x); y = static_cast<T>(vec->y); return *this; }
