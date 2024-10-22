@@ -1,5 +1,7 @@
 # 2D Fighting Game
-# 2 Player Fighting Game facut in C++ cu SDL
+# 2 Player Fighting Game facut in C++ cu libraria SDL2
+Repo-ul contine toate fisierele necesare pentru a construi proiectul in Visual Studio 2022 IDE.
+In plus, trebuie instalata libraria SDL2.
 # Functionalitati:
 - input pentru dimensiunea Game window-ului
 - input diferit pentru cei doi jucatori(P1 : WASD/E R T, P2 : arrow keys/KP1 KP2 KP3) -> (movement/punch kick block)
