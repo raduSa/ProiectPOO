@@ -10,7 +10,9 @@ TextureManager::TextureManager(GameObject* player, std::string folder) :
 	{ {&idle, "idle"}, {&idleInverted, "idleInverted"}, {&crouch, "crouch"}, {&crouchInverted, "crouchInverted"},
 	{&punch, "punch"}, {&punchInverted, "punchInverted"}, {&kick, "kick"}, {&kickInverted, "kickInverted"},
 	{&crouchPunch, "crouchPunch"}, {&crouchPunchInverted, "crouchPunchInverted"},
-	{&crouchKick, "crouchKick"}, {&crouchKickInverted, "crouchKickInverted"} };
+	{&crouchKick, "crouchKick"}, {&crouchKickInverted, "crouchKickInverted"},
+	{&block, "block"}, {&blockInverted, "blockInverted"}, {&crouchBlock, "crouchBlock"}, {&crouchBlockInverted, "crouchBlockInverted"},
+	{&hit, "hit"}, {&hitInverted, "hitInverted"}, {&crouchHit, "crouchHit"}, {&crouchHitInverted, "crouchHitInverted"}};
 
 	for (auto& pair : textures)
 		if (TextureManager::FileExists("assets/" + folder + "/" + pair.second + ".png"))
@@ -45,6 +47,10 @@ void TextureManager::update() {
 				else
 					*objectTex = crouchKickInverted;
 			}
+			else if (state->IsBlocking())
+				*objectTex = crouchBlockInverted;
+			else if (state->IsHit())
+				*objectTex = crouchHitInverted;
 			else
 				*objectTex = crouchInverted;
 		}
@@ -53,6 +59,10 @@ void TextureManager::update() {
 				*objectTex = punchInverted;
 			else
 				*objectTex = kickInverted;
+		else if (state->IsBlocking())
+			*objectTex = blockInverted;
+		else if (state->IsHit())
+			*objectTex = hitInverted;
 		else
 			*objectTex = idleInverted;
 	}
@@ -64,6 +74,10 @@ void TextureManager::update() {
 				else
 					*objectTex = crouchKick;
 			}
+			else if (state->IsBlocking())
+				*objectTex = crouchBlock;
+			else if (state->IsHit())
+				*objectTex = crouchHit;
 			else
 				*objectTex = crouch;
 		}
@@ -72,6 +86,10 @@ void TextureManager::update() {
 				*objectTex = punch;
 			else
 				*objectTex = kick;
+		else if (state->IsBlocking())
+			*objectTex = block;
+		else if (state->IsHit())
+			*objectTex = hit;
 		else
 			*objectTex = idle;
 	}

@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
 #include "Game.h"
+#include <vector>
+#include <algorithm>
 
 class Attack
 {
@@ -13,8 +15,8 @@ protected:
 	virtual void dealDMG() = 0;
 public:
 	Attack(GameObject*, GameObject*);
-	virtual ~Attack() { std::cout << "Deleted attack!\n"; }
-	static void setAttackTexture();
+	virtual ~Attack();
+	static void setAttackTexture(std::vector<int> rgbValues = {0, 0, 0});
 	
 	void drawHitbox();
 	bool checkHit() const;

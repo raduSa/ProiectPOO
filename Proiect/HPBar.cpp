@@ -8,6 +8,10 @@ HPBar::HPBar(GameObject* player, const int& width) : player(player), windowW(wid
 	back.w = 700; back.y = 30; back.h = 120;
 }
 
+PlayerHPBar::PlayerHPBar(GameObject* player, const int& w) : HPBar(player, w) {}
+
+EnemyHPBar::EnemyHPBar(GameObject* player, const int& w) : HPBar(player, w) {}
+
 void HPBar::setBarTextures() {
 	SDL_Surface* surface = SDL_CreateRGBSurface(0, 640, 480, 32, 0, 0, 0, 0);
 	SDL_FillRect(surface, nullptr, SDL_MapRGB(surface->format, 255, 0, 0)); // color
