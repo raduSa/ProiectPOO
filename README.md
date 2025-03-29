@@ -23,7 +23,7 @@ A simple **2-player fighting game** built in **C++** using the **SDL2** library.
 
 ## Setup & Build Instructions  
 ### Prerequisites  
-- **Visual Studio 2022** (or another C++ compiler)  
+- **Visual Studio 2022**
 - **SDL2 library** (must be installed)  
 
 ### Steps to Build  
