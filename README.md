@@ -48,4 +48,5 @@ A simple **2-player fighting game** built in **C++** using the **SDL2** library.
 | Block | `T` | `KP3` |
 
 ## 📷 Screenshots  
-*(Add some gameplay screenshots or GIFs here to showcase the game!)*  
+![SS1](screenshots/ss1.jpg) 
+![SS2](screenshots/ss2.jpg)   
