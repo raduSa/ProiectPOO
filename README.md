@@ -24,8 +24,6 @@ A simple **2-player fighting game** built in **C++** using the **SDL2** library.
 ## Setup & Build Instructions  
 ### Prerequisites  
 - **Visual Studio 2022**
-- **SDL** [(SDL2-devel-2.30.1-VC.zip)](https://github.com/libsdl-org/SDL/releases/tag/release-2.30.1)
-- **SDL_image** [(SDL2_image-devel-2.8.2-VC.zip)](https://github.com/libsdl-org/SDL_image/releases/tag/release-2.8.2)
 
 ### Steps to Build  
 1. Clone this repository:  
@@ -33,10 +31,8 @@ A simple **2-player fighting game** built in **C++** using the **SDL2** library.
    git clone https://github.com/yourusername/2D-Fighting-Game.git
    cd 2D-Fighting-Game
    ```
-2. Install prerequisites.  
-3. Open the project in **Visual Studio 2022**.
-4. Import the 2 libraries into VS.
-5. Build and run the project.  
+2. Open the project in **Visual Studio 2022**.
+3. Build and run the project.  
 
 ## 🎮 Controls  
 | Action  | Player 1 | Player 2 |
